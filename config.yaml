@@ -1,0 +1,7 @@
+servers:
+  - host: localhost:5081
+    capacity: 100
+    name: "The first server"
+  - host: localhost:5231
+    capacity: 100
+    name: "The second server"
