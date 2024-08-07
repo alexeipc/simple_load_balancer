@@ -24,6 +24,10 @@ class RequestNumberBalancer(BalancerInterface):
             self.mutexes[server['name']] = Lock()
     
     def get_the_best_server(self) -> dict | None:
+        """ Find the best server based on their current number of active requests
+        Returns:
+            dict | None: the best sever or None if all of the servers are unavailable
+        """
         minimum = MAX_INT
         target_server = None
         
@@ -45,18 +49,28 @@ class RequestNumberBalancer(BalancerInterface):
         return target_server 
     
     def active(self, server) -> None:
+        """ Announce the balancer that start redirecting to the given server
+        Args:
+            server: the given server
+        """
         # Start a mutex lock, only allow one thread to edit one value at the same time
         self.mutexes[server['name']].acquire()
         try:
+            # Increase the current active requests for the given server by one
             self.activeRequest[server['name']] += 1
         finally:
             # Releas the mutext lock
             self.mutexes[server['name']].release()
             
     def release(self, server: dict) -> None:
+        """ Announce the balancer that the request to the given server has ended
+        Args:
+            server (dict): the given server
+        """
         # Start a mutex lock, only allow one thread to edit one value at the same time
         self.mutexes[server['name']].acquire()
         try:
+            # Decrease the current active requests for the given server by one
             self.activeRequest[server['name']] -= 1
         finally:
             # Releas the mutext lock

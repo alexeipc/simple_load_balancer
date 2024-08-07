@@ -21,6 +21,7 @@ class IpMutexLock:
         if ip not in self.locks:
             self.locks[ip] = Lock()
         
+        # Get the latest lock created and acquire the lock
         lock = self.locks[ip]
         lock.acquire()
         return
@@ -35,6 +36,7 @@ class IpMutexLock:
             lock = self.locks[ip]
             lock.release()
             
+            # Erase the lock if it isn't used anymore
             if not lock.locked():
                 del self.locks[ip]
             

@@ -12,6 +12,13 @@ class MemoryCache(CacheInterface):
         self.duration = duration
         
     def get(self, key):
+        """ Return the value of the key if it has not been expired
+        Args:
+            key : the key we want to get
+
+        Returns:
+            The value if it exists in cache and has not been expired or else None
+        """
         cache_entry = self.cache.get(key)
         
         if cache_entry is not None and time.time() - cache_entry['time_stamp'] < self.duration:
@@ -21,7 +28,11 @@ class MemoryCache(CacheInterface):
             return None
             
     def set(self, key, value):
-        # Only allow one the edit at the time
+        """ Get the key with the specific value
+        Args:
+            key: the given key
+            value: the given value
+        """
         self.cache[key] = {
             'value': value,
             'time_stamp': time.time(),
